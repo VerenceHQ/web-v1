@@ -6,8 +6,8 @@ import Link from "next/link";
 export default function Home() {
   return (
     <main className={styles.main}>
+      <CustomNavigation />
       <header>
-        <CustomNavigation />
         <section className={styles.hero_section}>
           <h1>Where Truth Meets Thought</h1>
           <p>
