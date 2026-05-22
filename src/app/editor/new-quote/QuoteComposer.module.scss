@@ -1,0 +1,313 @@
+.pageWrapper {
+  min-height: 100vh;
+  background: var(--bg-base, #f5fbf9);
+  color: var(--text-primary, #0c2018);
+  font-family: var(--font-montserrat), sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header Navbar */
+.navbar {
+  background: #003c27;
+  color: #ffffff;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 20px rgba(0, 60, 39, 0.15);
+  z-index: 10;
+}
+
+.logoArea {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1.15rem;
+}
+
+.navActions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.btnBack {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  padding: 0.5rem 1.25rem;
+  border-radius: 50px;
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btnBack:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #ffffff;
+}
+
+.btnDraft {
+  background: transparent;
+  border: 1px solid #009c65;
+  color: #009c65;
+  padding: 0.55rem 1.25rem;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.btnDraft:hover {
+  background: rgba(0, 156, 101, 0.05);
+}
+
+.btnPublish {
+  background: #009c65;
+  border: none;
+  color: #ffffff;
+  padding: 0.6rem 1.5rem;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  box-shadow: 0 4px 10px rgba(0, 156, 101, 0.2);
+}
+
+.btnPublish:hover {
+  background: #008556;
+  transform: translateY(-1px);
+}
+
+/* Split Pane Workspace */
+.composerLayout {
+  flex-grow: 1;
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  min-height: calc(100vh - 60px);
+}
+
+/* LEFT PANE: Creator Inputs */
+.editorPane {
+  border-right: 1px solid rgba(0, 60, 39, 0.08);
+  display: flex;
+  background: #ffffff;
+  overflow-y: auto;
+}
+
+.editorScrollContainer {
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2.25rem;
+}
+
+.sectionTitle {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #003c27;
+  border-left: 3px solid #009c65;
+  padding-left: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.inputGroup label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary, #435b51);
+}
+
+.inputField {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: rgba(0, 60, 39, 0.02);
+  border: 1px solid rgba(0, 60, 39, 0.08);
+  border-radius: 0.75rem;
+  color: #0c2018;
+  font-size: 0.9rem;
+  font-family: inherit;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.inputField:focus {
+  border-color: #009c65;
+  background: #ffffff;
+  box-shadow: 0 0 8px rgba(0, 156, 101, 0.08);
+}
+
+.selectField {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: rgba(0, 60, 39, 0.02);
+  border: 1px solid rgba(0, 60, 39, 0.08);
+  border-radius: 0.75rem;
+  color: #0c2018;
+  font-size: 0.9rem;
+  font-family: inherit;
+  transition: all 0.2s ease;
+  outline: none;
+  cursor: pointer;
+}
+
+/* RIGHT PANE: Live Quote card visualizer */
+.previewPane {
+  background: #fcfdfd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 3rem;
+  overflow-y: auto;
+}
+
+.previewScrollContainer {
+  width: 100%;
+  max-width: 680px;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.visualCardHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.visualCardHeader h4 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #009c65;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.visualCardHeader p {
+  font-size: 0.8rem;
+  color: var(--text-secondary, #80968c);
+}
+
+/* Pixel perfect Quote block matching our frontpage */
+.quoteCard {
+  background: linear-gradient(135deg, #003c27 0%, #001c12 100%);
+  color: #ffffff;
+  border-radius: 1.5rem; /* Standard reduced corner radius */
+  padding: 3.5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 15px 40px rgba(0, 60, 39, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.quoteCard::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 10% 20%, rgba(0, 156, 101, 0.1) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.quoteLabel {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #009c65;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+}
+
+.quoteCard blockquote {
+  font-size: 1.6rem;
+  line-height: 1.45;
+  font-style: italic;
+  font-weight: 500;
+  max-width: 540px;
+  margin: 0;
+  color: #ffffff;
+}
+
+.quoteCard cite {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  font-style: normal;
+  display: block;
+}
+
+.wisdomBlock {
+  background: #ffffff;
+  border: 1px solid rgba(0, 60, 39, 0.08);
+  border-radius: 1.25rem;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+}
+
+.wisdomTitle {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #009c65;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.wisdomText {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-primary, #0c2018);
+}
+
+.contextBadge {
+  font-size: 0.75rem;
+  color: var(--text-secondary, #435b51);
+  font-weight: 600;
+  border-top: 1px solid rgba(0, 60, 39, 0.06);
+  padding-top: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (max-width: 900px) {
+  .composerLayout {
+    grid-template-columns: 1fr;
+  }
+  .previewPane {
+    border-top: 1px solid rgba(0, 60, 39, 0.08);
+  }
+}

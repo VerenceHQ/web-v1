@@ -1,0 +1,448 @@
+.pageWrapper {
+  min-height: 100vh;
+  background: var(--bg-base, #f5fbf9);
+  color: var(--text-primary, #0c2018);
+  font-family: var(--font-montserrat), sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header Navbar */
+.navbar {
+  background: #003c27;
+  color: #ffffff;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 20px rgba(0, 60, 39, 0.15);
+  z-index: 10;
+}
+
+.logoArea {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1.15rem;
+}
+
+.navActions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.btnBack {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  padding: 0.5rem 1.25rem;
+  border-radius: 50px;
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btnBack:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #ffffff;
+}
+
+.btnDraft {
+  background: transparent;
+  border: 1px solid #009c65;
+  color: #009c65;
+  padding: 0.55rem 1.25rem;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.btnDraft:hover {
+  background: rgba(0, 156, 101, 0.05);
+}
+
+.btnPublish {
+  background: #009c65;
+  border: none;
+  color: #ffffff;
+  padding: 0.6rem 1.5rem;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  box-shadow: 0 4px 10px rgba(0, 156, 101, 0.2);
+}
+
+.btnPublish:hover {
+  background: #008556;
+  transform: translateY(-1px);
+}
+
+/* Double Pane Layout */
+.composerLayout {
+  flex-grow: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: calc(100vh - 60px);
+}
+
+/* LEFT PANE: Editor Panel */
+.editorPane {
+  border-right: 1px solid rgba(0, 60, 39, 0.08);
+  display: flex;
+  background: #ffffff;
+  overflow-y: auto;
+}
+
+.editorScrollContainer {
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2.25rem;
+}
+
+.sectionTitle {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #003c27;
+  border-left: 3px solid #009c65;
+  padding-left: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.metaGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.inputGroup label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary, #435b51);
+}
+
+.inputField {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: rgba(0, 60, 39, 0.02);
+  border: 1px solid rgba(0, 60, 39, 0.08);
+  border-radius: 0.75rem;
+  color: #0c2018;
+  font-size: 0.9rem;
+  font-family: inherit;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.inputField:focus {
+  border-color: #009c65;
+  background: #ffffff;
+  box-shadow: 0 0 8px rgba(0, 156, 101, 0.08);
+}
+
+.selectField {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: rgba(0, 60, 39, 0.02);
+  border: 1px solid rgba(0, 60, 39, 0.08);
+  border-radius: 0.75rem;
+  color: #0c2018;
+  font-size: 0.9rem;
+  font-family: inherit;
+  transition: all 0.2s ease;
+  outline: none;
+  cursor: pointer;
+}
+
+.selectField:focus {
+  border-color: #009c65;
+  background: #ffffff;
+}
+
+/* Banner selector styling */
+.bannerGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.bannerThumb {
+  position: relative;
+  height: 60px;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.bannerThumb:hover {
+  transform: translateY(-2px);
+}
+
+.bannerThumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.bannerActive {
+  border-color: #009c65;
+  box-shadow: 0 4px 10px rgba(0, 156, 101, 0.2);
+}
+
+.customUrlBlock {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+/* Editor Toolbar & Textarea */
+.editorWorkspace {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(0, 60, 39, 0.08);
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.toolbar {
+  background: rgba(0, 60, 39, 0.03);
+  border-bottom: 1px solid rgba(0, 60, 39, 0.08);
+  padding: 0.6rem;
+  display: flex;
+  gap: 0.35rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.toolBtn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary, #435b51);
+  padding: 0.4rem 0.6rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.toolBtn:hover {
+  background: rgba(0, 60, 39, 0.06);
+  color: #003c27;
+}
+
+.divider {
+  width: 1px;
+  height: 18px;
+  background: rgba(0, 60, 39, 0.12);
+  margin: 0 0.25rem;
+}
+
+.toggleLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary, #435b51);
+  margin-left: auto;
+  cursor: pointer;
+}
+
+.checkboxInput {
+  accent-color: #009c65;
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+}
+
+.editorArea {
+  width: 100%;
+  min-height: 380px;
+  padding: 1.5rem;
+  border: none;
+  outline: none;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #0c2018;
+  resize: vertical;
+}
+
+/* RIGHT PANE: Visual Preview */
+.previewPane {
+  background: #fcfdfd;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.previewScrollContainer {
+  padding: 4rem 3rem;
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.previewHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  border-bottom: 1px solid rgba(0, 60, 39, 0.08);
+  padding-bottom: 2rem;
+}
+
+.previewMetaRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #009c65;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.previewTitle {
+  font-size: 2.4rem;
+  line-height: 1.25;
+  font-weight: 700;
+  color: #003c27;
+  letter-spacing: -0.02em;
+}
+
+.previewSubtitle {
+  font-size: 1.15rem;
+  line-height: 1.6;
+  color: var(--text-secondary, #435b51);
+}
+
+.authorMetaBlock {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.authorMetaBlock span {
+  font-size: 0.8rem;
+  color: var(--text-secondary, #80968c);
+}
+
+.authorNameText {
+  font-weight: 600;
+  color: #003c27;
+  font-size: 0.85rem;
+}
+
+.previewBannerContainer {
+  width: 100%;
+  height: 280px;
+  border-radius: 1rem;
+  overflow: hidden;
+  position: relative;
+  background: #f0faf6;
+}
+
+.previewBanner {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Preview Markdown Content Typography styling */
+.articleBody {
+  font-size: 1.05rem;
+  line-height: 1.75;
+  color: #0c2018;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.articleBody h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #003c27;
+  margin-top: 1.5rem;
+  letter-spacing: -0.01em;
+}
+
+.articleBody p {
+  margin: 0;
+}
+
+/* Styled Blockquotes */
+.articleBody blockquote {
+  border-left: 4px solid #009c65;
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+  font-style: italic;
+  font-size: 1.15rem;
+  line-height: 1.6;
+  color: #003c27;
+  background: rgba(0, 156, 101, 0.04);
+  border-radius: 0 1rem 1rem 0;
+}
+
+/* Drop-cap on first paragraph */
+.firstParagraph::first-letter {
+  float: left;
+  font-size: 3.5rem;
+  line-height: 0.9;
+  font-weight: 700;
+  color: #003c27;
+  margin-right: 0.6rem;
+  margin-top: 0.1rem;
+}
+
+/* Mobile warning alert */
+.mobileAlert {
+  display: none;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (max-width: 900px) {
+  .composerLayout {
+    grid-template-columns: 1fr;
+  }
+  .previewPane {
+    border-top: 1px solid rgba(0, 60, 39, 0.08);
+  }
+}
