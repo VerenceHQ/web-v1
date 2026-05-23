@@ -46,7 +46,9 @@ function CustomNavigation() {
     if (rawLocal) {
       try {
         const localPubs = JSON.parse(rawLocal);
-        const publishedLocal = localPubs.filter((p: any) => p.status === "published");
+        const publishedLocal = localPubs.filter(
+          (p: any) => p.status === "published",
+        );
         publishedLocal.forEach((localItem: any) => {
           const idx = merged.findIndex((m) => m.slug === localItem.slug);
           if (idx !== -1) {
@@ -66,7 +68,9 @@ function CustomNavigation() {
     if (rawQuotes) {
       try {
         const localQuotes = JSON.parse(rawQuotes);
-        const publishedQuotes = localQuotes.filter((q: any) => q.status === "published");
+        const publishedQuotes = localQuotes.filter(
+          (q: any) => q.status === "published",
+        );
         setAllQuotes(publishedQuotes);
       } catch (e) {
         console.error("Error parsing local quotes", e);
@@ -81,16 +85,24 @@ function CustomNavigation() {
           .filter(
             (article) =>
               article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-              article.subtitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
-              article.category.toLowerCase().includes(searchQuery.toLowerCase())
+              article.subtitle
+                .toLowerCase()
+                .includes(searchQuery.toLowerCase()) ||
+              article.category
+                .toLowerCase()
+                .includes(searchQuery.toLowerCase()),
           )
           .map((a) => ({ ...a, searchType: "article" as const })),
         ...allQuotes
           .filter(
             (quote) =>
-              quote.quoteText.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              quote.quoteText
+                .toLowerCase()
+                .includes(searchQuery.toLowerCase()) ||
               quote.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
-              quote.wisdomCommentary.toLowerCase().includes(searchQuery.toLowerCase())
+              quote.wisdomCommentary
+                .toLowerCase()
+                .includes(searchQuery.toLowerCase()),
           )
           .map((q) => ({
             slug: q.id,
@@ -106,7 +118,10 @@ function CustomNavigation() {
   // Close search dropdown on click outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     }
@@ -122,7 +137,7 @@ function CustomNavigation() {
         <Logo />
         <h3>Verence</h3>
       </Link>
-      
+
       <div className={styles.searchContainer} ref={searchRef}>
         <div className={styles.searchBar}>
           <SearchIcon />
@@ -137,14 +152,18 @@ function CustomNavigation() {
             onFocus={() => setIsOpen(true)}
           />
         </div>
-        
+
         {isOpen && searchQuery.trim() && (
           <div className={styles.searchResults}>
             {searchResults.length > 0 ? (
               searchResults.map((item) => (
                 <Link
                   key={`${item.searchType}-${item.slug}`}
-                  href={item.searchType === "quote" ? `/categories/${item.categorySlug}` : `/articles/${item.slug}`}
+                  href={
+                    item.searchType === "quote"
+                      ? `/categories/${item.categorySlug}`
+                      : `/articles/${item.slug}`
+                  }
                   className={styles.searchItem}
                   onClick={() => {
                     setIsOpen(false);
@@ -157,7 +176,9 @@ function CustomNavigation() {
                 </Link>
               ))
             ) : (
-              <div className={styles.noResults}>No matches found for "{searchQuery}"</div>
+              <div className={styles.noResults}>
+                No matches found for "{searchQuery}"
+              </div>
             )}
           </div>
         )}
@@ -179,7 +200,7 @@ function CustomNavigation() {
           ))}
         </div>
       </button>
-      
+
       <Button label="Subscribe" variant="primary" onClick={() => {}} />
     </nav>
   );

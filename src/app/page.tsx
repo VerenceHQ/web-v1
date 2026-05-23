@@ -11,7 +11,7 @@ export default function Home() {
   const [quoteOfTheDay, setQuoteOfTheDay] = useState({
     text: "The truth will set you free, but first it will make you uncomfortable.",
     author: "James Baldwin",
-    context: ""
+    context: "",
   });
 
   useEffect(() => {
@@ -21,7 +21,7 @@ export default function Home() {
         const [pubRes, quoteRes, overridesRes] = await Promise.all([
           api.publications.list({ status: "published" }),
           api.quotes.list("published"),
-          api.settings.getOverrides().catch(() => ({ overrides: {} as any }))
+          api.settings.getOverrides().catch(() => ({ overrides: {} as any })),
         ]);
 
         // Transform publications to match the frontend Article interface
@@ -50,7 +50,7 @@ export default function Home() {
             const override = overrides[sa.slug];
             return {
               ...sa,
-              isFeatured: override ? override.is_featured : sa.isFeatured
+              isFeatured: override ? override.is_featured : sa.isFeatured,
             };
           });
 
@@ -70,24 +70,33 @@ export default function Home() {
           setQuoteOfTheDay({
             text: latestQuote.quote_text,
             author: latestQuote.author,
-            context: latestQuote.context || ""
+            context: latestQuote.context || "",
           });
         }
       } catch (error) {
-        console.warn("Verence API down, falling back to offline LocalStorage state.", error);
-        
+        console.warn(
+          "Verence API down, falling back to offline LocalStorage state.",
+          error,
+        );
+
         // --- Offline fallback starts ---
         const rawDeleted = localStorage.getItem("verence_deleted_static_slugs");
-        const rawFeatured = localStorage.getItem("verence_featured_static_slugs");
-        
+        const rawFeatured = localStorage.getItem(
+          "verence_featured_static_slugs",
+        );
+
         let deletedSlugs: string[] = [];
         let featuredSlugs: string[] = [];
-        
+
         if (rawDeleted) {
-          try { deletedSlugs = JSON.parse(rawDeleted); } catch(e) {}
+          try {
+            deletedSlugs = JSON.parse(rawDeleted);
+          } catch (e) {}
         }
         if (rawFeatured) {
-          try { featuredSlugs = JSON.parse(rawFeatured); } catch(e) {}
+          try {
+            featuredSlugs = JSON.parse(rawFeatured);
+          } catch (e) {}
         }
 
         const activeStatic = articles
@@ -104,10 +113,15 @@ export default function Home() {
         if (rawLocal) {
           try {
             const localPubs = JSON.parse(rawLocal);
-            const publishedLocal = localPubs.filter((p: any) => p.status === "published");
-            
+            const publishedLocal = localPubs.filter(
+              (p: any) => p.status === "published",
+            );
+
             const filteredStatic = activeStatic.filter(
-              (staticArt) => !publishedLocal.some((localArt: any) => localArt.slug === staticArt.slug)
+              (staticArt) =>
+                !publishedLocal.some(
+                  (localArt: any) => localArt.slug === staticArt.slug,
+                ),
             );
             merged = [...publishedLocal, ...filteredStatic];
           } catch (e) {
@@ -120,13 +134,15 @@ export default function Home() {
         if (rawQuotes) {
           try {
             const localQuotes = JSON.parse(rawQuotes);
-            const publishedQuotes = localQuotes.filter((q: any) => q.status === "published");
+            const publishedQuotes = localQuotes.filter(
+              (q: any) => q.status === "published",
+            );
             if (publishedQuotes.length > 0) {
               const latestQuote = publishedQuotes[publishedQuotes.length - 1];
               setQuoteOfTheDay({
                 text: latestQuote.quoteText,
                 author: latestQuote.author,
-                context: latestQuote.context || ""
+                context: latestQuote.context || "",
               });
             }
           } catch (e) {
@@ -140,7 +156,8 @@ export default function Home() {
     loadData();
   }, []);
 
-  const featuredArticle = allArticles.find((a) => a.isFeatured) || allArticles[0];
+  const featuredArticle =
+    allArticles.find((a) => a.isFeatured) || allArticles[0];
 
   // Right side list of featured articles
   const rightArticles = allArticles
@@ -337,9 +354,7 @@ export default function Home() {
       <section className={styles.quoteSection}>
         <div className={styles.quoteCard}>
           <span className={styles.quoteLabel}>QUOTE OF THE DAY</span>
-          <blockquote>
-            "{quoteOfTheDay.text}"
-          </blockquote>
+          <blockquote>"{quoteOfTheDay.text}"</blockquote>
           <cite>
             — {quoteOfTheDay.author}
             {quoteOfTheDay.context ? ` (${quoteOfTheDay.context})` : ""}
