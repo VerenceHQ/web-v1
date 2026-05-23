@@ -41,28 +41,7 @@ export default function Home() {
           image: pub.image,
         }));
 
-        const overrides = overridesRes.overrides || {};
-
-        // Merge static articles that are NOT deleted
-        const activeStatic = articles
-          .filter((sa) => !overrides[sa.slug]?.is_deleted)
-          .map((sa) => {
-            const override = overrides[sa.slug];
-            return {
-              ...sa,
-              isFeatured: override ? override.is_featured : sa.isFeatured,
-            };
-          });
-
-        // Combine: dynamic first, then static
-        const merged = [...fetchedPubs];
-        activeStatic.forEach((staticArt) => {
-          if (!merged.some((m) => m.slug === staticArt.slug)) {
-            merged.push(staticArt);
-          }
-        });
-
-        setAllArticles(merged);
+        setAllArticles(fetchedPubs);
 
         // Load quote
         if (quoteRes.quotes.length > 0) {

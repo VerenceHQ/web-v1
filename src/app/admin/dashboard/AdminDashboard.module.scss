@@ -988,12 +988,18 @@ input:checked + .slider:before {
   }
 }
 
+@media (max-width: 768px) {
+  .mainContainer {
+    padding: 1rem;
+  }
+}
+
 @media (max-width: 640px) {
   .navbar {
-    padding: 1rem 1.5rem;
+    padding: 1rem;
   }
   .panelContainer {
-    padding: 1.5rem;
+    padding: 1rem;
   }
   .statsGrid {
     grid-template-columns: 1fr;

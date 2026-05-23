@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import styles from "./Login.module.css";
 import Logo from "@/components/Logo";
+import { api } from "@/utils/api";
 
 interface Profile {
   id: string;
@@ -31,39 +32,69 @@ export default function EditorLogin() {
       return;
     }
 
-    // 2. Hydrate profiles dynamically from the admin database
-    const rawEditors = localStorage.getItem("verence_editors_list");
-    if (rawEditors) {
+    // 2. Hydrate profiles from the database or offline fallback
+    async function loadProfiles() {
       try {
-        setProfiles(JSON.parse(rawEditors));
-      } catch (e) {
-        console.error("Error parsing editors list", e);
-      }
-    } else {
-      // Seed default profiles if not present
-      const defaultEditors: Profile[] = [
-        {
-          id: "elena",
-          name: "Elena Rostova",
-          role: "Senior Analytical Writer",
-          avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&h=150&q=80",
-          bio: "Focuses on tech ethics, machine sentience, and cognitive system policy.",
-          passcode: "truth",
-          status: "active"
-        },
-        {
-          id: "marcus",
-          name: "Marcus Vance",
-          role: "Philosophy Columnist",
-          avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=150&h=150&q=80",
-          bio: "Explores Eastern metaphysics, classical ethics, and state dynamics.",
-          passcode: "truth",
-          status: "active"
+        const response = await api.editors.list();
+        if (response.success && response.editors) {
+          // Map backend schema to Profile schema
+          const mapped = response.editors.map((ed: any) => ({
+            id: ed.id,
+            name: ed.name,
+            role: ed.role,
+            avatar: ed.avatar,
+            bio: ed.bio,
+            passcode: "truth", // Local fallback passcode representation
+            status: ed.status,
+          }));
+          setProfiles(mapped);
+          // Keep local storage up to date for offline fallback
+          localStorage.setItem("verence_editors_list", JSON.stringify(mapped));
+        } else {
+          loadOfflineFallback();
         }
-      ];
-      localStorage.setItem("verence_editors_list", JSON.stringify(defaultEditors));
-      setProfiles(defaultEditors);
+      } catch (err: any) {
+        console.warn("Verence API offline, falling back to offline LocalStorage state for editors list.", err);
+        loadOfflineFallback();
+      }
     }
+
+    function loadOfflineFallback() {
+      const rawEditors = localStorage.getItem("verence_editors_list");
+      if (rawEditors) {
+        try {
+          setProfiles(JSON.parse(rawEditors));
+        } catch (e) {
+          console.error("Error parsing editors list", e);
+        }
+      } else {
+        // Seed default profiles if not present
+        const defaultEditors: Profile[] = [
+          {
+            id: "elena",
+            name: "Elena Rostova",
+            role: "Senior Analytical Writer",
+            avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&h=150&q=80",
+            bio: "Focuses on tech ethics, machine sentience, and cognitive system policy.",
+            passcode: "truth",
+            status: "active"
+          },
+          {
+            id: "marcus",
+            name: "Marcus Vance",
+            role: "Philosophy Columnist",
+            avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=150&h=150&q=80",
+            bio: "Explores Eastern metaphysics, classical ethics, and state dynamics.",
+            passcode: "truth",
+            status: "active"
+          }
+        ];
+        localStorage.setItem("verence_editors_list", JSON.stringify(defaultEditors));
+        setProfiles(defaultEditors);
+      }
+    }
+
+    loadProfiles();
   }, [router]);
 
   const handleSelectProfile = (profile: Profile) => {
@@ -76,7 +107,7 @@ export default function EditorLogin() {
     setError("");
   };
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedProfile) {
       setError("Please select your editorial profile.");
@@ -98,25 +129,50 @@ export default function EditorLogin() {
     setLoading(true);
     setError("");
 
-    setTimeout(() => {
-      // Check the passcode stored dynamically for this editor
-      if (passcode.trim() === profile.passcode) {
+    try {
+      // Authenticate against live server/proxy database
+      const response = await api.editors.login(selectedProfile, passcode);
+      if (response.success && response.editor) {
         localStorage.setItem(
           "verence_editor_session",
           JSON.stringify({
-            uid: profile.id,
-            name: profile.name,
-            role: profile.role,
-            avatar: profile.avatar,
+            uid: response.editor.id,
+            name: response.editor.name,
+            role: response.editor.role,
+            avatar: response.editor.avatar,
             loggedInAt: new Date().toISOString(),
           })
         );
         router.push("/editor/dashboard");
       } else {
         setLoading(false);
-        setError(`Invalid security access code. Hint: Use '${profile.passcode}'`);
+        setError(response.message || "Invalid credentials.");
       }
-    }, 1000);
+    } catch (err: any) {
+      if (err.message === "NETWORK_OFFLINE") {
+        // Offline validation fallback
+        if (passcode.trim() === profile.passcode) {
+          localStorage.setItem(
+            "verence_editor_session",
+            JSON.stringify({
+              uid: profile.id,
+              name: profile.name,
+              role: profile.role,
+              avatar: profile.avatar,
+              loggedInAt: new Date().toISOString(),
+              isOffline: true,
+            })
+          );
+          router.push("/editor/dashboard");
+        } else {
+          setLoading(false);
+          setError(`Invalid security access code. Hint: Use '${profile.passcode}'`);
+        }
+      } else {
+        setLoading(false);
+        setError(err.message || "An error occurred during verification.");
+      }
+    }
   };
 
   const activeProfileData = profiles.find((p) => p.id === selectedProfile);

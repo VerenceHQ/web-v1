@@ -641,17 +641,27 @@
 }
 
 @media (max-width: 768px) {
+  .categoryHeader {
+    padding: 4rem 1rem 3rem 1rem;
+  }
   .controlsContainer {
+    padding: 0 1rem;
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
+  }
+  .articlesSection {
+    padding: 0 1rem;
+  }
+  .footer {
+    padding: 3rem 1rem 2rem 1rem;
   }
   .sortDropdownContainer {
     width: 100%;
     justify-content: space-between;
   }
   .controlsBar {
-    top: 56px; /* Update for smaller mobile nav height if necessary */
+    top: 56px;
   }
   .listItem {
     grid-template-columns: 1fr;
@@ -659,7 +669,7 @@
   }
   .listItemImageContainer {
     height: 200px;
-    order: -1; /* Display image at top on mobile */
+    order: -1;
   }
 }
 

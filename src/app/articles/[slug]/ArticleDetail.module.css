@@ -545,6 +545,15 @@
 }
 
 @media (max-width: 768px) {
+  .articleWrapper {
+    padding: 0 1rem;
+  }
+  .moreLikeThisSection {
+    padding: 3rem 1rem;
+  }
+  .footer {
+    padding: 3rem 1rem 2rem 1rem;
+  }
   .articleHeader h1 {
     font-size: 2.25rem;
   }

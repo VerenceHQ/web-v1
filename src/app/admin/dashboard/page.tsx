@@ -608,22 +608,7 @@ export default function AdminDashboard() {
 
 
   // Process data merging for Content Management and Metrics
-  const activeStaticArticles = staticArticles.filter((sa) => !deletedStaticSlugs.includes(sa.slug));
-  
   const mergedItems: MergedContentItem[] = [
-    ...activeStaticArticles.map((sa) => ({
-      id: sa.slug,
-      slug: sa.slug,
-      title: sa.title,
-      subtitle: sa.subtitle || "",
-      author: sa.author,
-      category: sa.category,
-      status: "published" as const,
-      reads: sa.readCount || 0,
-      type: "article" as const,
-      isFeatured: sa.isFeatured || featuredStaticSlugs.includes(sa.slug),
-      rawDate: sa.date
-    })),
     ...localPublications.map((pub) => ({
       id: pub.id,
       slug: pub.slug,

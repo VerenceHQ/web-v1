@@ -233,10 +233,16 @@
   color: #009c65;
 }
 
-@media (max-width: 600px) {
-  .loginContainer {
-    padding: 2.5rem 1.75rem;
+@media (max-width: 768px) {
+  .loginPage {
+    padding: 1rem;
   }
+  .loginContainer {
+    padding: 2rem 1rem;
+  }
+}
+
+@media (max-width: 600px) {
   .brandName {
     font-size: 1.5rem;
   }

@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import styles from "./QuoteComposer.module.css";
 import Logo from "@/components/Logo";
+import { api } from "@/utils/api";
 
 interface Session {
   uid: string;
@@ -36,6 +37,7 @@ export default function QuoteComposer() {
   const [context, setContext] = useState("");
   const [wisdomCommentary, setWisdomCommentary] = useState("");
   const [category, setCategory] = useState("Question & Wisdom");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     // 1. Session check
@@ -47,7 +49,7 @@ export default function QuoteComposer() {
     setSession(JSON.parse(rawSession));
   }, [router]);
 
-  const handleSave = (status: "draft" | "published") => {
+  const handleSave = async (status: "draft" | "published") => {
     if (!quoteText.trim()) {
       alert("Please enter the quote citation text.");
       return;
@@ -57,31 +59,83 @@ export default function QuoteComposer() {
       return;
     }
 
-    const newQuote: LocalQuote = {
-      id: "quote_" + Date.now(),
-      quoteText: quoteText.trim(),
+    setLoading(true);
+
+    const categorySlug = category.toLowerCase().replace(/ & /g, "-and-").replace(/\s+/g, "-");
+    const payload = {
+      quote_text: quoteText.trim(),
       author: author.trim(),
       context: context.trim() ? context.trim() : "Unspecified Discourse",
-      wisdomCommentary: wisdomCommentary.trim() ? wisdomCommentary.trim() : "Reflections on modern philosophy.",
+      wisdom_commentary: wisdomCommentary.trim() ? wisdomCommentary.trim() : "Reflections on modern philosophy.",
       category: category,
-      categorySlug: category.toLowerCase().replace(/ & /g, "-and-").replace(/\s+/g, "-"),
-      date: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+      category_slug: categorySlug,
       status: status,
-      type: "quote",
     };
 
-    // Load, append and save to localStorage
-    const rawQuotes = localStorage.getItem("verence_local_quotes");
-    let currentQuotes: LocalQuote[] = [];
-    if (rawQuotes) {
-      currentQuotes = JSON.parse(rawQuotes);
+    try {
+      const res = await api.quotes.create(payload);
+      if (res.success && res.quote) {
+        // Hydrate local quotes list locally
+        const rawQuotes = localStorage.getItem("verence_local_quotes");
+        let currentQuotes: LocalQuote[] = [];
+        if (rawQuotes) {
+          try { currentQuotes = JSON.parse(rawQuotes); } catch (e) {}
+        }
+        
+        const newLocalQuote: LocalQuote = {
+          id: res.quote.id,
+          quoteText: res.quote.quote_text,
+          author: res.quote.author,
+          context: res.quote.context || "",
+          wisdomCommentary: res.quote.wisdom_commentary || "",
+          category: res.quote.category,
+          categorySlug: res.quote.category_slug,
+          date: res.quote.date,
+          status: res.quote.status,
+          type: "quote"
+        };
+
+        currentQuotes.push(newLocalQuote);
+        localStorage.setItem("verence_local_quotes", JSON.stringify(currentQuotes));
+
+        alert(status === "published" ? "Quote is now published and active!" : "Quote draft saved successfully.");
+        router.push("/editor/dashboard");
+      } else {
+        alert(res.message || "Could not save quote.");
+      }
+    } catch (err: any) {
+      if (err.message === "NETWORK_OFFLINE") {
+        // Offline resilient fallback
+        const newQuote: LocalQuote = {
+          id: "quote_" + Date.now(),
+          quoteText: quoteText.trim(),
+          author: author.trim(),
+          context: context.trim() ? context.trim() : "Unspecified Discourse",
+          wisdomCommentary: wisdomCommentary.trim() ? wisdomCommentary.trim() : "Reflections on modern philosophy.",
+          category: category,
+          categorySlug: categorySlug,
+          date: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+          status: status,
+          type: "quote",
+        };
+
+        const rawQuotes = localStorage.getItem("verence_local_quotes");
+        let currentQuotes: LocalQuote[] = [];
+        if (rawQuotes) {
+          try { currentQuotes = JSON.parse(rawQuotes); } catch (e) {}
+        }
+
+        currentQuotes.push(newQuote);
+        localStorage.setItem("verence_local_quotes", JSON.stringify(currentQuotes));
+
+        alert(status === "published" ? "Offline: Quote is published locally!" : "Offline: Quote draft saved locally!");
+        router.push("/editor/dashboard");
+      } else {
+        alert(err.message || "An unexpected error occurred while saving quote.");
+      }
+    } finally {
+      setLoading(false);
     }
-
-    currentQuotes.push(newQuote);
-    localStorage.setItem("verence_local_quotes", JSON.stringify(currentQuotes));
-
-    alert(status === "published" ? "Quote is now published and active!" : "Quote draft saved successfully.");
-    router.push("/editor/dashboard");
   };
 
   if (!session) return null;
@@ -98,11 +152,11 @@ export default function QuoteComposer() {
           <Link href="/editor/dashboard" className={styles.btnBack}>
             Exit
           </Link>
-          <button className={styles.btnDraft} onClick={() => handleSave("draft")}>
+          <button className={styles.btnDraft} disabled={loading} onClick={() => handleSave("draft")}>
             Save Draft
           </button>
-          <button className={styles.btnPublish} onClick={() => handleSave("published")}>
-            Publish Quote
+          <button className={styles.btnPublish} disabled={loading} onClick={() => handleSave("published")}>
+            {loading ? "Cite Quote..." : "Publish Quote"}
           </button>
         </div>
       </header>
@@ -114,75 +168,77 @@ export default function QuoteComposer() {
         <section className={styles.editorPane}>
           <div className={styles.editorScrollContainer}>
             
-            <div>
+            <div className={styles.formSection}>
               <h3 className={styles.sectionTitle}>Citation Details</h3>
               <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
                 <div className={styles.inputGroup}>
-                  <label htmlFor="quote-textarea">Quote Text</label>
+                  <label htmlFor="quote-text-input">PHILOSOPHICAL CITATION TEXT</label>
                   <textarea
-                    id="quote-textarea"
-                    className={styles.inputField}
+                    id="quote-text-input"
+                    className={styles.textField}
                     rows={4}
-                    placeholder="Enter the quote text verbatim..."
+                    placeholder="Enter the striking exact quote or core thesis statement..."
                     value={quoteText}
                     onChange={(e) => setQuoteText(e.target.value)}
-                    style={{ fontSize: "1rem", lineHeight: "1.5" }}
+                    disabled={loading}
                   />
                 </div>
-
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                <div className={styles.doubleGroup}>
                   <div className={styles.inputGroup}>
-                    <label htmlFor="author-input">Author / thinker</label>
+                    <label htmlFor="author-input">CITATION AUTHOR NAME</label>
                     <input
                       id="author-input"
                       type="text"
                       className={styles.inputField}
-                      placeholder="e.g. James Baldwin"
+                      placeholder="e.g. James Baldwin, Lao Tzu..."
                       value={author}
                       onChange={(e) => setAuthor(e.target.value)}
+                      disabled={loading}
                     />
                   </div>
                   <div className={styles.inputGroup}>
-                    <label htmlFor="category-select">Quote Category</label>
-                    <select
-                      id="category-select"
-                      className={styles.selectField}
-                      value={category}
-                      onChange={(e) => setCategory(e.target.value)}
-                    >
-                      <option>Question & Wisdom</option>
-                      <option>Ideas & Insight</option>
-                      <option>Dialogue & Debate</option>
-                      <option>Truth & Context</option>
-                    </select>
+                    <label htmlFor="context-input">DISCOURSE ORIGIN / CONTEXT</label>
+                    <input
+                      id="context-input"
+                      type="text"
+                      className={styles.inputField}
+                      placeholder="e.g. Collected Essays, Interview..."
+                      value={context}
+                      onChange={(e) => setContext(e.target.value)}
+                      disabled={loading}
+                    />
                   </div>
                 </div>
-
                 <div className={styles.inputGroup}>
-                  <label htmlFor="context-input">Context / source title</label>
-                  <input
-                    id="context-input"
-                    type="text"
-                    className={styles.inputField}
-                    placeholder="e.g. Speech at Western University, or Collected Essays"
-                    value={context}
-                    onChange={(e) => setContext(e.target.value)}
-                  />
+                  <label htmlFor="category-select">TOPIC DOMAIN</label>
+                  <select
+                    id="category-select"
+                    className={styles.selectField}
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                    disabled={loading}
+                  >
+                    <option value="Question & Wisdom">Question & Wisdom</option>
+                    <option value="Truth & Context">Truth & Context</option>
+                    <option value="Ideas & Insight">Ideas & Insight</option>
+                    <option value="Dialogue & Debate">Dialogue & Debate</option>
+                  </select>
                 </div>
               </div>
             </div>
 
-            <div>
-              <h3 className={styles.sectionTitle}>Wisdom & Commentary</h3>
+            <div className={styles.formSection} style={{ borderBottom: "none" }}>
+              <h3 className={styles.sectionTitle}>Wisdom Commentary & Reflections</h3>
               <div className={styles.inputGroup}>
-                <label htmlFor="wisdom-textarea">Philosophical Annotation</label>
+                <label htmlFor="commentary-input">EXPLANATORY INSIGHT</label>
                 <textarea
-                  id="wisdom-textarea"
-                  className={styles.inputField}
+                  id="commentary-input"
+                  className={styles.textField}
                   rows={4}
-                  placeholder="Explain the depth, context, and relevance of this quote for Verence readers..."
+                  placeholder="Explain why this quote matters or provide analytical context to guide the reader's study..."
                   value={wisdomCommentary}
                   onChange={(e) => setWisdomCommentary(e.target.value)}
+                  disabled={loading}
                 />
               </div>
             </div>
@@ -190,38 +246,34 @@ export default function QuoteComposer() {
           </div>
         </section>
 
-        {/* RIGHT PANE: Visual preview */}
-        <section className={styles.previewPane}>
-          <div className={styles.previewScrollContainer}>
-            <div className={styles.visualCardHeader}>
-              <h4>Verence Wisdom Card</h4>
-              <p>This is a live high-fidelity layout preview of how this quote will display on the home feed and category collections.</p>
-            </div>
-
-            {/* The Quote block */}
-            <div className={styles.quoteCard}>
-              <span className={styles.quoteLabel}>Quote of the Day</span>
-              <blockquote>
-                {quoteText ? `"${quoteText}"` : '"The truth will set you free, but first it will make you uncomfortable."'}
-              </blockquote>
-              <cite>— {author ? author : "James Baldwin"}</cite>
-            </div>
-
-            {/* Commentary Card */}
-            <div className={styles.wisdomBlock}>
-              <span className={styles.wisdomTitle}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: "#009c65" }}><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
-                <span>Editorial commentary</span>
-              </span>
-              <p className={styles.wisdomText}>
-                {wisdomCommentary ? wisdomCommentary : "This reflection highlights the initial friction of self-discovery and collective integrity. By examining our discomfort, we move closer to genuine understanding."}
-              </p>
-              <div className={styles.contextBadge}>
-                Source Context: {context ? context : "Collected Essays on Integrity"}
+        {/* RIGHT PANE: Wisdom Preview Card */}
+        <aside className={styles.previewPane}>
+          <h3>Editorial Wisdom Preview</h3>
+          <div className={styles.previewCard}>
+            <span className={styles.previewLabelLabel}>Live Preview</span>
+            <blockquote className={styles.previewQuoteText}>
+              "{quoteText || "Mimicry is not understanding. A calculator is faster than any human, but it doesn't know what a number is."}"
+            </blockquote>
+            <p className={styles.previewQuoteAuthor}>
+              — <strong>{author || "Dr. Mira Sol"}</strong> <span className={styles.previewQuoteContext}>({context || "The Philosophy of AI"})</span>
+            </p>
+            {wisdomCommentary && (
+              <div className={styles.previewCommentary}>
+                <strong>Reflections:</strong>
+                <p>{wisdomCommentary}</p>
               </div>
-            </div>
+            )}
           </div>
-        </section>
+          
+          <div className={styles.charterCard}>
+            <h4>Citing Guidelines</h4>
+            <ul>
+              <li>Keep citations authentic and accurate to the original text.</li>
+              <li>Keep wisdom commentaries concise, deep, and focused on helping the reader think.</li>
+              <li>Always categorize quotes accurately under the matching platform domain.</li>
+            </ul>
+          </div>
+        </aside>
 
       </main>
     </div>

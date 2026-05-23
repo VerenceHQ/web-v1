@@ -778,4 +778,31 @@
   .quoteCard blockquote {
     font-size: 1.4rem;
   }
+}
+
+@media (max-width: 768px) {
+  .heroSection {
+    padding: 6rem 1rem 5rem 1rem;
+  }
+  .featuredSection {
+    padding: 0 1rem;
+  }
+  .missionSection {
+    padding: 4rem 1rem;
+  }
+  .findHereSection {
+    padding: 0 1rem;
+  }
+  .subscribeSection {
+    padding: 4rem 1rem;
+  }
+  .quoteSection {
+    padding: 4rem 1rem;
+  }
+  .recentSection {
+    padding: 0 1rem;
+  }
+  .footer {
+    padding: 3rem 1rem 2rem 1rem;
+  }
 }/*# sourceMappingURL=page.module.css.map */

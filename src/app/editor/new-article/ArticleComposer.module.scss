@@ -446,3 +446,15 @@
     border-top: 1px solid rgba(0, 60, 39, 0.08);
   }
 }
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: 1rem;
+  }
+  .editorScrollContainer {
+    padding: 1.5rem 1rem;
+  }
+  .previewScrollContainer {
+    padding: 2rem 1rem;
+  }
+}
