@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import styles from "./AdminDashboard.module.css";
@@ -108,6 +108,35 @@ export default function AdminDashboard() {
 
   // Notification state
   const [notification, setNotification] = useState("");
+
+  // Custom dropdown states
+  const [isTypeDropdownOpen, setIsTypeDropdownOpen] = useState(false);
+  const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
+  const [isModalStatusOpen, setIsModalStatusOpen] = useState(false);
+
+  // Custom dropdown refs
+  const typeDropdownRef = useRef<HTMLDivElement>(null);
+  const statusDropdownRef = useRef<HTMLDivElement>(null);
+  const modalStatusDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close custom dropdowns on click outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (typeDropdownRef.current && !typeDropdownRef.current.contains(event.target as Node)) {
+        setIsTypeDropdownOpen(false);
+      }
+      if (statusDropdownRef.current && !statusDropdownRef.current.contains(event.target as Node)) {
+        setIsStatusDropdownOpen(false);
+      }
+      if (modalStatusDropdownRef.current && !modalStatusDropdownRef.current.contains(event.target as Node)) {
+        setIsModalStatusOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   // Seed avatar options
   const avatarOptions = [
@@ -871,25 +900,115 @@ export default function AdminDashboard() {
                 </div>
                 
                 <div className={styles.selectGroup}>
-                  <select 
-                    className={styles.filterSelect}
-                    value={contentTypeFilter}
-                    onChange={(e) => setContentTypeFilter(e.target.value as any)}
-                  >
-                    <option value="all">All Content Types</option>
-                    <option value="article">Articles & Essays</option>
-                    <option value="quote">Wisdom Citations</option>
-                  </select>
+                  <div className={styles.customDropdownContainer} ref={typeDropdownRef}>
+                    <button
+                      className={styles.dropdownToggleBtn}
+                      onClick={() => setIsTypeDropdownOpen(!isTypeDropdownOpen)}
+                    >
+                      <span>
+                        {contentTypeFilter === "all" && "All Content Types"}
+                        {contentTypeFilter === "article" && "Articles & Essays"}
+                        {contentTypeFilter === "quote" && "Wisdom Citations"}
+                      </span>
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="3"
+                        className={`${styles.arrowIcon} ${isTypeDropdownOpen ? styles.arrowUp : ""}`}
+                      >
+                        <path d="M6 9l6 6 6-6"></path>
+                      </svg>
+                    </button>
+                    {isTypeDropdownOpen && (
+                      <ul className={styles.customDropdownMenu}>
+                        <li
+                          className={`${styles.customDropdownItem} ${contentTypeFilter === "all" ? styles.selectedItem : ""}`}
+                          onClick={() => {
+                            setContentTypeFilter("all");
+                            setIsTypeDropdownOpen(false);
+                          }}
+                        >
+                          All Content Types
+                        </li>
+                        <li
+                          className={`${styles.customDropdownItem} ${contentTypeFilter === "article" ? styles.selectedItem : ""}`}
+                          onClick={() => {
+                            setContentTypeFilter("article");
+                            setIsTypeDropdownOpen(false);
+                          }}
+                        >
+                          Articles & Essays
+                        </li>
+                        <li
+                          className={`${styles.customDropdownItem} ${contentTypeFilter === "quote" ? styles.selectedItem : ""}`}
+                          onClick={() => {
+                            setContentTypeFilter("quote");
+                            setIsTypeDropdownOpen(false);
+                          }}
+                        >
+                          Wisdom Citations
+                        </li>
+                      </ul>
+                    )}
+                  </div>
 
-                  <select 
-                    className={styles.filterSelect}
-                    value={contentStatusFilter}
-                    onChange={(e) => setContentStatusFilter(e.target.value as any)}
-                  >
-                    <option value="all">All Statuses</option>
-                    <option value="published">Published</option>
-                    <option value="draft">Drafts</option>
-                  </select>
+                  <div className={styles.customDropdownContainer} ref={statusDropdownRef}>
+                    <button
+                      className={styles.dropdownToggleBtn}
+                      onClick={() => setIsStatusDropdownOpen(!isStatusDropdownOpen)}
+                    >
+                      <span>
+                        {contentStatusFilter === "all" && "All Statuses"}
+                        {contentStatusFilter === "published" && "Published"}
+                        {contentStatusFilter === "draft" && "Drafts"}
+                      </span>
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="3"
+                        className={`${styles.arrowIcon} ${isStatusDropdownOpen ? styles.arrowUp : ""}`}
+                      >
+                        <path d="M6 9l6 6 6-6"></path>
+                      </svg>
+                    </button>
+                    {isStatusDropdownOpen && (
+                      <ul className={styles.customDropdownMenu}>
+                        <li
+                          className={`${styles.customDropdownItem} ${contentStatusFilter === "all" ? styles.selectedItem : ""}`}
+                          onClick={() => {
+                            setContentStatusFilter("all");
+                            setIsStatusDropdownOpen(false);
+                          }}
+                        >
+                          All Statuses
+                        </li>
+                        <li
+                          className={`${styles.customDropdownItem} ${contentStatusFilter === "published" ? styles.selectedItem : ""}`}
+                          onClick={() => {
+                            setContentStatusFilter("published");
+                            setIsStatusDropdownOpen(false);
+                          }}
+                        >
+                          Published
+                        </li>
+                        <li
+                          className={`${styles.customDropdownItem} ${contentStatusFilter === "draft" ? styles.selectedItem : ""}`}
+                          onClick={() => {
+                            setContentStatusFilter("draft");
+                            setIsStatusDropdownOpen(false);
+                          }}
+                        >
+                          Drafts
+                        </li>
+                      </ul>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -1257,14 +1376,52 @@ export default function AdminDashboard() {
 
               <div className={styles.inputGroup}>
                 <label>Account Credentials Status</label>
-                <select
-                  className={styles.inputField}
-                  value={modalStatus}
-                  onChange={(e) => setModalStatus(e.target.value as any)}
-                >
-                  <option value="active">Active (Credentials Authorized)</option>
-                  <option value="suspended">Suspended (Lock Workspace)</option>
-                </select>
+                <div className={styles.customDropdownContainer} ref={modalStatusDropdownRef} style={{ width: "100%", minWidth: "100%" }}>
+                  <button
+                    type="button"
+                    className={styles.dropdownToggleBtn}
+                    onClick={() => setIsModalStatusOpen(!isModalStatusOpen)}
+                    style={{ width: "100%", padding: "0.8rem 1.1rem" }}
+                  >
+                    <span>
+                      {modalStatus === "active" && "Active (Credentials Authorized)"}
+                      {modalStatus === "suspended" && "Suspended (Lock Workspace)"}
+                    </span>
+                    <svg
+                      width="12"
+                      height="12"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="3"
+                      className={`${styles.arrowIcon} ${isModalStatusOpen ? styles.arrowUp : ""}`}
+                    >
+                      <path d="M6 9l6 6 6-6"></path>
+                    </svg>
+                  </button>
+                  {isModalStatusOpen && (
+                    <ul className={styles.customDropdownMenu} style={{ width: "100%" }}>
+                      <li
+                        className={`${styles.customDropdownItem} ${modalStatus === "active" ? styles.selectedItem : ""}`}
+                        onClick={() => {
+                          setModalStatus("active");
+                          setIsModalStatusOpen(false);
+                        }}
+                      >
+                        Active (Credentials Authorized)
+                      </li>
+                      <li
+                        className={`${styles.customDropdownItem} ${modalStatus === "suspended" ? styles.selectedItem : ""}`}
+                        onClick={() => {
+                          setModalStatus("suspended");
+                          setIsModalStatusOpen(false);
+                        }}
+                      >
+                        Suspended (Lock Workspace)
+                      </li>
+                    </ul>
+                  )}
+                </div>
               </div>
 
               <div className={styles.modalActions}>

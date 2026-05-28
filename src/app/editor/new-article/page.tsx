@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import styles from "./ArticleComposer.module.css";
@@ -70,6 +70,23 @@ export default function ArticleComposer() {
   
   const [activeTab, setActiveTab] = useState<"write" | "preview">("write");
   const [loading, setLoading] = useState(false);
+
+  // Custom Category Dropdown State & Ref
+  const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
+  const categoryDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown on click outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (categoryDropdownRef.current && !categoryDropdownRef.current.contains(event.target as Node)) {
+        setIsCategoryDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   useEffect(() => {
     // 1. Session check
@@ -346,19 +363,44 @@ export default function ArticleComposer() {
                 </div>
                 <div className={styles.doubleGroup}>
                   <div className={styles.inputGroup}>
-                    <label htmlFor="category-select">TOPIC DOMAIN</label>
-                    <select
-                      id="category-select"
-                      className={styles.selectField}
-                      value={category}
-                      onChange={(e) => setCategory(e.target.value)}
-                      disabled={loading}
-                    >
-                      <option value="Truth & Context">Truth & Context</option>
-                      <option value="Ideas & Insight">Ideas & Insight</option>
-                      <option value="Question & Wisdom">Question & Wisdom</option>
-                      <option value="Dialogue & Debate">Dialogue & Debate</option>
-                    </select>
+                    <label>TOPIC DOMAIN</label>
+                    <div className={styles.customDropdownContainer} ref={categoryDropdownRef}>
+                      <button
+                        type="button"
+                        className={styles.dropdownToggleBtn}
+                        onClick={() => !loading && setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
+                        disabled={loading}
+                      >
+                        <span>{category}</span>
+                        <svg
+                          width="12"
+                          height="12"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="3"
+                          className={`${styles.arrowIcon} ${isCategoryDropdownOpen ? styles.arrowUp : ""}`}
+                        >
+                          <path d="M6 9l6 6 6-6"></path>
+                        </svg>
+                      </button>
+                      {isCategoryDropdownOpen && (
+                        <ul className={styles.customDropdownMenu}>
+                          {["Truth & Context", "Ideas & Insight", "Question & Wisdom", "Dialogue & Debate"].map((cat) => (
+                            <li
+                              key={cat}
+                              className={`${styles.customDropdownItem} ${category === cat ? styles.selectedItem : ""}`}
+                              onClick={() => {
+                                setCategory(cat);
+                                setIsCategoryDropdownOpen(false);
+                              }}
+                            >
+                              {cat}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
                   </div>
                   <div className={styles.inputGroup}>
                     <label htmlFor="readtime-input">ESTIMATED STUDY READING TIME</label>
