@@ -593,7 +593,7 @@ export default function AdminDashboard() {
       <div className={styles.dashboardPage} style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh" }}>
         <div style={{ textAlign: "center" }}>
           <div style={{ width: "40px", height: "40px", border: "3px solid rgba(0, 156, 101, 0.1)", borderTopColor: "#009c65", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto 1.5rem" }} />
-          <h2 style={{ fontSize: "1.1rem", fontWeight: 500, letterSpacing: "0.05em", color: "rgba(230, 246, 240, 0.8)" }}>SYNCHRONIZING VERENCE PLATFORM PARAMETERS...</h2>
+          <h2 style={{ fontSize: "1.1rem", fontWeight: 600, letterSpacing: "0.05em", color: "var(--primary-green-dark, #003c27)" }}>SYNCHRONIZING VERENCE PLATFORM PARAMETERS...</h2>
           <style>{`
             @keyframes spin {
               to { transform: rotate(360deg); }
@@ -860,7 +860,7 @@ export default function AdminDashboard() {
               {/* Controls bar */}
               <div className={styles.filtersRow}>
                 <div className={styles.searchWrapper}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: "rgba(255,255,255,0.4)" }}><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--text-muted, #666666)" }}><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                   <input
                     type="text"
                     className={styles.searchInput}
@@ -918,7 +918,7 @@ export default function AdminDashboard() {
                                   {item.title}
                                 </Link>
                               ) : (
-                                <span style={{ fontWeight: 500, fontStyle: "italic", fontSize: "0.9rem", color: "#e6f6f0" }}>
+                                <span style={{ fontWeight: 500, fontStyle: "italic", fontSize: "0.9rem", color: "var(--primary-green-dark, #003c27)" }}>
                                   {item.title}
                                 </span>
                               )}
@@ -1038,7 +1038,7 @@ export default function AdminDashboard() {
                             <span style={{ fontSize: "0.85rem", fontWeight: 500, color: "#009c65" }}>{editor.role}</span>
                           </td>
                           <td>
-                            <code style={{ background: "rgba(0,0,0,0.3)", padding: "0.25rem 0.5rem", borderRadius: "0.35rem", fontSize: "0.8rem", color: "#e6f6f0" }}>
+                            <code style={{ background: "var(--primary-green-light, #e6f6f0)", border: "1px solid rgba(0, 156, 101, 0.15)", padding: "0.25rem 0.5rem", borderRadius: "0.35rem", fontSize: "0.8rem", color: "var(--primary-green-dark, #003c27)" }}>
                               {editor.passcode}
                             </code>
                           </td>
@@ -1190,7 +1190,7 @@ export default function AdminDashboard() {
             </div>
 
             {modalError && (
-              <div style={{ color: "#ff6b6b", fontSize: "0.85rem", background: "rgba(214,40,40,0.1)", padding: "0.75rem 1rem", borderRadius: "0.5rem", border: "1px solid rgba(214,40,40,0.2)" }}>
+              <div style={{ color: "#dc2626", fontSize: "0.85rem", background: "rgba(220, 38, 38, 0.05)", padding: "0.75rem 1rem", borderRadius: "0.5rem", border: "1px solid rgba(220, 38, 38, 0.12)" }}>
                 {modalError}
               </div>
             )}
