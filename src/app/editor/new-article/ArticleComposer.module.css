@@ -92,7 +92,7 @@
 .composerLayout {
   flex-grow: 1;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 350px;
   min-height: calc(100vh - 60px);
 }
 
@@ -112,6 +112,20 @@
   display: flex;
   flex-direction: column;
   gap: 2.25rem;
+}
+
+.formSection {
+  background: #ffffff;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(0, 60, 39, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 60, 39, 0.03);
+}
+
+.doubleGroup {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
 }
 
 .sectionTitle {
@@ -230,9 +244,6 @@
 }
 
 .toolbar {
-  background: rgba(0, 60, 39, 0.03);
-  border-bottom: 1px solid rgba(0, 60, 39, 0.08);
-  padding: 0.6rem;
   display: flex;
   gap: 0.35rem;
   align-items: center;
@@ -260,6 +271,79 @@
   color: #003c27;
 }
 
+.smartDraftBtn {
+  background: linear-gradient(135deg, rgba(0, 156, 101, 0.1), rgba(0, 60, 39, 0.05));
+  color: #009c65;
+  border: 1px solid rgba(0, 156, 101, 0.2);
+}
+
+.smartDraftBtn:hover {
+  background: linear-gradient(135deg, rgba(0, 156, 101, 0.15), rgba(0, 60, 39, 0.1));
+  color: #003c27;
+  border-color: rgba(0, 156, 101, 0.3);
+}
+
+.smartDraftPanel {
+  padding: 1rem 1.5rem;
+  background: rgba(0, 156, 101, 0.04);
+  border-bottom: 1px solid rgba(0, 60, 39, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  animation: dropdownSlideDown 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.smartDraftDesc {
+  font-size: 0.8rem;
+  color: var(--text-secondary, #435b51);
+  margin: 0;
+}
+
+.smartDraftInputGroup {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.smartDraftInput {
+  flex-grow: 1;
+  padding: 0.6rem 1rem;
+  background: #ffffff;
+  border: 1px solid rgba(0, 60, 39, 0.1);
+  border-radius: 0.5rem;
+  color: #0c2018;
+  font-size: 0.85rem;
+  font-family: inherit;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.smartDraftInput:focus {
+  border-color: #009c65;
+  box-shadow: 0 0 0 3px rgba(0, 156, 101, 0.1);
+}
+
+.smartDraftSubmit {
+  background: #009c65;
+  color: #ffffff;
+  border: none;
+  padding: 0 1.25rem;
+  border-radius: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.smartDraftSubmit:hover:not(:disabled) {
+  background: #008556;
+}
+
+.smartDraftSubmit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .divider {
   width: 1px;
   height: 18px;
@@ -285,17 +369,24 @@
   cursor: pointer;
 }
 
-.editorArea {
+.editorTextArea {
   width: 100%;
   min-height: 380px;
   padding: 1.5rem;
-  border: none;
+  border: 1px solid rgba(0, 60, 39, 0.08);
+  border-radius: 0.5rem;
   outline: none;
   font-family: "Courier New", Courier, monospace;
   font-size: 0.95rem;
   line-height: 1.6;
   color: #0c2018;
   resize: vertical;
+  background: #fdfdfd;
+}
+
+.editorTextArea:focus {
+  border-color: #009c65;
+  box-shadow: 0 0 0 3px rgba(0, 156, 101, 0.1);
 }
 
 /* RIGHT PANE: Visual Preview */
@@ -365,6 +456,60 @@
   font-weight: 600;
   color: #003c27;
   font-size: 0.85rem;
+}
+
+.previewContainer {
+  padding: 3rem 4rem;
+  background: #ffffff;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.previewMeta {
+  margin-bottom: 2rem;
+}
+
+.previewLabelLabel {
+  display: inline-block;
+  background: rgba(0, 156, 101, 0.1);
+  color: #009c65;
+  padding: 0.25rem 0.75rem;
+  border-radius: 50px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
+}
+
+.authorSection {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(0, 60, 39, 0.08);
+}
+
+.authorDetails {
+  display: flex;
+  flex-direction: column;
+}
+
+.authName {
+  font-weight: 700;
+  color: #003c27;
+  font-size: 0.95rem;
+}
+
+.authSub {
+  font-size: 0.8rem;
+  color: #80968c;
+}
+
+.previewBody {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #0c2018;
 }
 
 .previewBannerContainer {
@@ -561,3 +706,155 @@
   }
 }
 
+/* RIGHT PANE: Editorial Quality Checklist & Instructions */
+.instructionPane {
+  background: #fdfdfd;
+  padding: 2.5rem;
+  border-left: 1px solid rgba(0, 60, 39, 0.08);
+  overflow-y: auto;
+}
+
+.instructionPane h3 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #003c27;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
+  border-left: 3px solid #009c65;
+  padding-left: 0.75rem;
+}
+
+.cardCharter {
+  background: rgba(0, 156, 101, 0.04);
+  padding: 1.25rem;
+  border-radius: 0.75rem;
+  border: 1px dashed rgba(0, 156, 101, 0.2);
+  font-size: 0.85rem;
+  color: #435b51;
+  line-height: 1.6;
+}
+
+.cardCharter ul {
+  padding-left: 1.25rem;
+  margin-top: 0.75rem;
+}
+
+.cardCharter li {
+  margin-bottom: 0.5rem;
+}
+
+.guideItem {
+  margin-bottom: 1.25rem;
+}
+
+.guideItem strong {
+  display: block;
+  font-size: 0.85rem;
+  color: #003c27;
+  margin-bottom: 0.25rem;
+}
+
+.guideItem p {
+  font-size: 0.8rem;
+  color: #435b51;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.guideItem code {
+  background: rgba(0, 60, 39, 0.06);
+  padding: 0.15rem 0.35rem;
+  border-radius: 4px;
+  font-family: "Courier New", Courier, monospace;
+  color: #009c65;
+}
+
+.tabToggles {
+  display: flex;
+  background: rgba(0, 60, 39, 0.02);
+  padding: 0.5rem;
+  border-bottom: 1px solid rgba(0, 60, 39, 0.08);
+  gap: 0.5rem;
+}
+
+.tabBtn {
+  flex-grow: 1;
+  padding: 0.6rem 1rem;
+  background: transparent;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #435b51;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.activeTab {
+  background: #ffffff;
+  color: #009c65;
+  box-shadow: 0 2px 8px rgba(0, 60, 39, 0.05);
+}
+
+.bannerLabel {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #003c27;
+  text-align: center;
+  margin-top: 0.25rem;
+}
+
+.dropCapParagraph::first-letter {
+  float: left;
+  font-size: 3.5rem;
+  line-height: 0.8;
+  padding-right: 0.5rem;
+  padding-top: 0.2rem;
+  font-weight: 700;
+  color: #009c65;
+  font-family: Georgia, serif;
+}
+
+.textField {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: rgba(0, 60, 39, 0.02);
+  border: 1px solid rgba(0, 60, 39, 0.08);
+  border-radius: 0.75rem;
+  color: #0c2018;
+  font-size: 0.9rem;
+  font-family: inherit;
+  transition: all 0.2s ease;
+  outline: none;
+  resize: vertical;
+}
+
+.textField:focus {
+  border-color: #009c65;
+  background: #ffffff;
+  box-shadow: 0 0 8px rgba(0, 156, 101, 0.08);
+}
+
+@media (max-width: 768px) {
+  .formSection {
+    padding: 1rem;
+  }
+  .doubleGroup {
+    grid-template-columns: 1fr;
+  }
+  .composerLayout {
+    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
+  }
+  .instructionPane {
+    border-left: none;
+    border-top: 1px solid rgba(0, 60, 39, 0.08);
+  }
+  .previewContainer {
+    padding: 2rem 1rem;
+  }
+}

@@ -71,6 +71,11 @@ export default function ArticleComposer() {
   const [activeTab, setActiveTab] = useState<"write" | "preview">("write");
   const [loading, setLoading] = useState(false);
 
+  // Smart Draft State
+  const [isSmartDraftOpen, setIsSmartDraftOpen] = useState(false);
+  const [smartDraftTopic, setSmartDraftTopic] = useState("");
+  const [isDrafting, setIsDrafting] = useState(false);
+
   // Custom Category Dropdown State & Ref
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
   const categoryDropdownRef = useRef<HTMLDivElement>(null);
@@ -131,6 +136,26 @@ export default function ArticleComposer() {
       textarea.focus();
       textarea.setSelectionRange(start + prefix.length, start + prefix.length + selected.length);
     }, 50);
+  };
+
+  const handleSmartDraft = async () => {
+    if (!smartDraftTopic.trim()) return;
+    setIsDrafting(true);
+    try {
+      const res = await api.ai.generateDraft(smartDraftTopic);
+      if (res.success && res.draft) {
+        if (res.title && !title) setTitle(res.title);
+        setMarkdownContent((prev) => prev ? prev + "\n\n" + res.draft : res.draft);
+        setIsSmartDraftOpen(false);
+        setSmartDraftTopic("");
+      } else {
+        alert("Failed to generate draft. Please try again.");
+      }
+    } catch (err: any) {
+      alert(err.message || "An unexpected error occurred during drafting.");
+    } finally {
+      setIsDrafting(false);
+    }
   };
 
   const handleSave = async (status: "draft" | "published") => {
@@ -331,7 +356,7 @@ export default function ArticleComposer() {
             </button>
           </div>
 
-          <div className={styles.editorScrollContainer} style={{ display: activeTab === "write" ? "block" : "none" }}>
+          <div className={styles.editorScrollContainer} style={{ display: activeTab === "write" ? "flex" : "none" }}>
             
             {/* 1. Basic Metadata */}
             <div className={styles.formSection}>
@@ -462,12 +487,45 @@ export default function ArticleComposer() {
                   ESSAY EDITING PANE
                 </label>
                 <div className={styles.toolbar}>
-                  <button type="button" onClick={() => insertMarkdown("bold")}>B</button>
-                  <button type="button" onClick={() => insertMarkdown("italic")}>I</button>
-                  <button type="button" onClick={() => insertMarkdown("h2")}>H2</button>
-                  <button type="button" onClick={() => insertMarkdown("quote")}>Quote</button>
+                  <button type="button" onClick={() => insertMarkdown("bold")} className={styles.toolBtn}>B</button>
+                  <button type="button" onClick={() => insertMarkdown("italic")} className={styles.toolBtn}>I</button>
+                  <button type="button" onClick={() => insertMarkdown("h2")} className={styles.toolBtn}>H2</button>
+                  <button type="button" onClick={() => insertMarkdown("quote")} className={styles.toolBtn}>Quote</button>
+                  <div className={styles.divider}></div>
+                  <button 
+                    type="button" 
+                    onClick={() => setIsSmartDraftOpen(!isSmartDraftOpen)}
+                    className={`${styles.toolBtn} ${styles.smartDraftBtn}`}
+                  >
+                    ✨ Smart Draft
+                  </button>
                 </div>
               </div>
+              
+              {isSmartDraftOpen && (
+                <div className={styles.smartDraftPanel}>
+                  <p className={styles.smartDraftDesc}>Enter a concept or topic and our AI will generate an industry-standard draft.</p>
+                  <div className={styles.smartDraftInputGroup}>
+                    <input 
+                      type="text" 
+                      placeholder="e.g. The Philosophy of Artificial Intelligence..."
+                      value={smartDraftTopic}
+                      onChange={(e) => setSmartDraftTopic(e.target.value)}
+                      className={styles.smartDraftInput}
+                      disabled={isDrafting}
+                    />
+                    <button 
+                      type="button" 
+                      onClick={handleSmartDraft} 
+                      className={styles.smartDraftSubmit}
+                      disabled={isDrafting || !smartDraftTopic.trim()}
+                    >
+                      {isDrafting ? "Drafting..." : "Generate"}
+                    </button>
+                  </div>
+                </div>
+              )}
+
               <textarea
                 id="editor-textarea"
                 className={styles.editorTextArea}

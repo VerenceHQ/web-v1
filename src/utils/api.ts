@@ -215,5 +215,16 @@ export const api = {
       });
     },
   },
+
+  // Editor AI Assistant
+  ai: {
+    generateDraft: async (topic: string): Promise<{ success: boolean; draft: string; title?: string }> => {
+      return request("/draft", {
+        method: "POST",
+        body: JSON.stringify({ topic }),
+      });
+    }
+  },
 };
+
 

@@ -426,3 +426,118 @@
   }
 }
 
+.formSection {
+  background: #ffffff;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(0, 60, 39, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 60, 39, 0.03);
+}
+
+.doubleGroup {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.charterCard {
+  background: rgba(0, 156, 101, 0.04);
+  padding: 1.25rem;
+  border-radius: 0.75rem;
+  border: 1px dashed rgba(0, 156, 101, 0.2);
+  font-size: 0.85rem;
+  color: #435b51;
+  line-height: 1.6;
+}
+
+.previewLabelLabel {
+  display: inline-block;
+  background: rgba(0, 156, 101, 0.1);
+  color: #009c65;
+  padding: 0.25rem 0.75rem;
+  border-radius: 50px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
+}
+
+.previewCard {
+  background: #ffffff;
+  padding: 3rem;
+  border-radius: 1rem;
+  box-shadow: 0 10px 40px rgba(0, 60, 39, 0.05);
+  margin-top: 2rem;
+  border: 1px solid rgba(0, 60, 39, 0.05);
+}
+
+.previewQuoteText {
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-size: 1.8rem;
+  color: #003c27;
+  line-height: 1.4;
+  font-style: italic;
+  margin-bottom: 1.5rem;
+}
+
+.previewQuoteAuthor {
+  font-weight: 700;
+  color: #009c65;
+  font-size: 1.1rem;
+  margin-bottom: 0.25rem;
+}
+
+.previewQuoteContext {
+  font-size: 0.9rem;
+  color: #80968c;
+  margin-bottom: 2rem;
+}
+
+.previewCommentary {
+  font-size: 1rem;
+  color: #435b51;
+  line-height: 1.6;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(0, 60, 39, 0.08);
+}
+.textField {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: rgba(0, 60, 39, 0.02);
+  border: 1px solid rgba(0, 60, 39, 0.08);
+  border-radius: 0.75rem;
+  color: #0c2018;
+  font-size: 0.9rem;
+  font-family: inherit;
+  transition: all 0.2s ease;
+  outline: none;
+  resize: vertical;
+}
+
+.textField:focus {
+  border-color: #009c65;
+  background: #ffffff;
+  box-shadow: 0 0 8px rgba(0, 156, 101, 0.08);
+}
+
+@media (max-width: 768px) {
+  .formSection {
+    padding: 1rem;
+  }
+  .doubleGroup {
+    grid-template-columns: 1fr;
+  }
+  .composerLayout {
+    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
+  }
+  .instructionPane {
+    border-left: none;
+    border-top: 1px solid rgba(0, 60, 39, 0.08);
+  }
+  .previewContainer {
+    padding: 2rem 1rem;
+  }
+}
